@@ -20,6 +20,12 @@ contract YieldFarm {
     string public name = "Yield Farming";
     SimbaToken public simbaToken;
     DaiToken public daiToken;
+    // ############################################################################
+
+    mapping(address => uint256 ) public stakedAmount;
+    mapping(address => bool) public hasStaked;
+    mapping(address => bool) public isStaking;
+    // ############################################################################
 
     constructor(DaiToken _daitoken, SimbaToken _simbatoken) public {
         daiToken = _daitoken;
@@ -35,15 +41,25 @@ contract YieldFarm {
     {
         //minimum staking amount is $100
          minimumStakeAmount = 100 * 10 ** 18;
-         require(minimumStakeAmount >= amount)
+         require(minimumStakeAmount >= amount, "Minimum Fee to Stake is $100")
     }
 
     // ############################################################################
 
-    function Stake(address user, uint256 _amount) public {
+    function Stake(uint256 _amount) public {
         //getting the minimum required fee to invest
-        getMinStakeFee(_amount)
+        getMinStakeFee(_amount);
         //user deposits minimum amout of token required to invest to this contract
+        daiToken.transferFrom(msg.sender,address(this),_amount);
+        //mapping for each user & how much he/she staked
+        stakedAmount[msg.sender] += _amount;
+        //add users to list if they have not staked
+        if(!hasStaked[msg.sender]){
+           stakers.push(msg.sender)
+        }
+        //get stake status
+        isStaking[msg.sender] = true;
+        hasStaked[msg.sender] = true;
     }
 
     // ############################################################################

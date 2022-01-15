@@ -12,5 +12,16 @@ def check_token_balance(user_address):
     print("Successful")
 
 
+#############################################################
+
+
+def deploy_staking_transaction(amount):
+    account = get_account()
+    prev_tx = YieldFarm[-1]
+    next_tx = prev_tx.Stake(amount, {"from": account})
+    next_tx.wait(1)
+    print(f"Successfully Staked {next_tx}")
+
+
 def main():
     check_token_balance()
