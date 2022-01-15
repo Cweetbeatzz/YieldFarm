@@ -55,7 +55,7 @@ contract YieldFarm {
         //getting the minimum required fee to invest
         getMinStakeFee(_amount);
         //user deposits minimum amout of token required to invest to this contract
-        simbaToken.transferFrom(msg.sender, address(this), _amount);
+        daiToken.transferFrom(msg.sender, address(this), _amount);
         //mapping for each user & how much he/she staked
         stakedAmount[msg.sender] += _amount;
         //add users to list if they have not staked
@@ -69,7 +69,7 @@ contract YieldFarm {
 
     // ############################################################################
 
-    function unStake(address user, uint256 amount) public {}
+    function unStake(uint256 amount) public {}
 
     // ############################################################################
 
