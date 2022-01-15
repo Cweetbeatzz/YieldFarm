@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Snapshot.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract TrueUsdToken is
+contract UsdCoinToken is
     ERC20,
     ERC20Burnable,
     ERC20Snapshot,
