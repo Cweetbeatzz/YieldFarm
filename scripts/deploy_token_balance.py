@@ -1,5 +1,5 @@
 from brownie import SimbaToken, DaiToken, YieldFarm
-from helpers import get_account
+from .helpers import get_account
 from web3 import Web3
 
 #############################################################
