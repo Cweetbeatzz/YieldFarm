@@ -56,11 +56,11 @@ contract YieldFarm is Ownable {
 
     // ############################################################################
 
-    function getMinStakeFee(uint256 amount) public payable returns (uint256) {
+    function getMinStakeFee(uint256 _amount) public payable returns (uint256) {
         //minimum staking amount is $100
         minimumStakeAmount = 100 * 10**18;
         //if the user has upto $100 he can stake else exit
-        require(minimumStakeAmount >= amount, "Minimum Fee to Stake is $100");
+        require(_amount >= minimumStakeAmount, "Minimum Fee to Stake is $100");
     }
 
     // ############################################################################
@@ -68,7 +68,7 @@ contract YieldFarm is Ownable {
     function Stake(uint256 _amount, address _token) public {
         require(AllowedTokenForStaking(_token), "Token is not allowed");
         //getting the minimum required fee to invest
-        getMinStakeFee(_amount);
+        getMinStakeFee(msg.value >= _amount);
         //user deposits minimum amout of token required to invest to this contract
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         //calling function to check if users has multiple stakes in different tokens
@@ -99,6 +99,12 @@ contract YieldFarm is Ownable {
     }
 
     // ############################################################################
+    function RemoveTokens(address _token) public onlyOwner {
+        // only admin can remove tokens
+        allowedTokens.pop(_token);
+    }
+
+    // ############################################################################
 
     function AllowedTokenForStaking(address _token) public returns (bool) {
         //only tokens listed can be staked on
@@ -123,29 +129,29 @@ contract YieldFarm is Ownable {
             //get the user
             address user = stakers[i];
             //getting the balance
-            uint256 bal = stakedAmount[user];
+            // uint256 bal = stakedAmount[user];
             //sending rewards only if the balance from the array shows that the user has staked so
             //if less than or equal to zero they have not staked
-            if (bal > 0) {
-                if (daiToken) {
-                    daiToken.transfer(user, bal);
-                }
-                if (simbaToken) {
-                    simbaToken.transfer(user, bal);
-                }
-                if (geminiDollar) {
-                    geminiDollar.transfer(user, bal);
-                }
-                if (sUsd) {
-                    sUsd.transfer(user, bal);
-                }
-                if (susdt) {
-                    susdt.transfer(user, bal);
-                }
-                if (usdcoin) {
-                    usdcoin.transfer(user, bal);
-                }
-            }
+            // if (bal > 0) {
+            //     if (daiToken) {
+            //         daiToken.transfer(user, bal);
+            //     }
+            //     if (simbaToken) {
+            //         simbaToken.transfer(user, bal);
+            //     }
+            //     if (geminiDollar) {
+            //         geminiDollar.transfer(user, bal);
+            //     }
+            //     if (sUsd) {
+            //         sUsd.transfer(user, bal);
+            //     }
+            //     if (susdt) {
+            //         susdt.transfer(user, bal);
+            //     }
+            //     if (usdcoin) {
+            //         usdcoin.transfer(user, bal);
+            //     }
+            // }
         }
     }
 
