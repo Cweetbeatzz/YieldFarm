@@ -28,7 +28,7 @@ def deploy_yield_farm():
 
 #############################################################
 
-# funds the yeild contact with the inital amount of tokens supplied
+# funds the yield contact with the inital amount of tokens supplied
 
 
 def fund_yield_contract():

@@ -30,7 +30,9 @@ contract YieldFarm is Ownable {
     address[] public allowedTokens;
     // ############################################################################
 
-    mapping(address => mapping(address => uint256)) public stakedAmount;
+    //arrays
+    // mapping(address => mapping(address => uint256)) public stakedAmount;
+    mapping(address => uint256) public stakedAmount;
     mapping(address => bool) public hasStaked;
     mapping(address => bool) public isStaking;
     mapping(address => uint256) public unique_Token_staked;
@@ -52,23 +54,24 @@ contract YieldFarm is Ownable {
         sUsd = IERC20(_sUsd);
         susdt = IERC20(_susdt);
         usdcoin = IERC20(_usdcoin);
-    }
 
-    // ############################################################################
-
-    function getMinStakeFee(uint256 _amount) public payable returns (uint256) {
         //minimum staking amount is $100
-        minimumStakeAmount = 100 * 10**18;
-        //if the user has upto $100 he can stake else exit
-        require(_amount >= minimumStakeAmount, "Minimum Fee to Stake is $100");
+        minimumStakeAmount = 100 ether;
     }
 
     // ############################################################################
 
-    function Stake(uint256 _amount, address _token) public {
+    function getMinStakeFee() public view returns (uint256) {
+        //if the user has upto $100 he can stake else exit
+        return minimumStakeAmount;
+    }
+
+    // ############################################################################
+
+    function Stake(uint256 _amount, address _token) public payable {
         require(AllowedTokenForStaking(_token), "Token is not allowed");
         //getting the minimum required fee to invest
-        getMinStakeFee(msg.value >= _amount);
+        require(msg.value >= getMinStakeFee(), "Minimum Fee to Stake is $100");
         //user deposits minimum amout of token required to invest to this contract
         IERC20(_token).transferFrom(msg.sender, address(this), _amount);
         //calling function to check if users has multiple stakes in different tokens
@@ -88,7 +91,7 @@ contract YieldFarm is Ownable {
 
     function uniqueToken(address _user, address _token) internal {
         if (stakedAmount[_token][_user] <= 0) {
-            unique_Token_staked += 1;
+            // unique_Token_staked += 1;
         }
     }
 
@@ -99,9 +102,9 @@ contract YieldFarm is Ownable {
     }
 
     // ############################################################################
-    function RemoveTokens(address _token) public onlyOwner {
-        // only admin can remove tokens
-        allowedTokens.pop(_token);
+    function RemoveTokens() public onlyOwner {
+        // only admin can remove last tokens listed in the series of tokens
+        allowedTokens.pop();
     }
 
     // ############################################################################
@@ -128,30 +131,17 @@ contract YieldFarm is Ownable {
         for (uint256 i = 0; i < stakers.length; i++) {
             //get the user
             address user = stakers[i];
-            //getting the balance
-            // uint256 bal = stakedAmount[user];
-            //sending rewards only if the balance from the array shows that the user has staked so
-            //if less than or equal to zero they have not staked
-            // if (bal > 0) {
-            //     if (daiToken) {
-            //         daiToken.transfer(user, bal);
-            //     }
-            //     if (simbaToken) {
-            //         simbaToken.transfer(user, bal);
-            //     }
-            //     if (geminiDollar) {
-            //         geminiDollar.transfer(user, bal);
-            //     }
-            //     if (sUsd) {
-            //         sUsd.transfer(user, bal);
-            //     }
-            //     if (susdt) {
-            //         susdt.transfer(user, bal);
-            //     }
-            //     if (usdcoin) {
-            //         usdcoin.transfer(user, bal);
-            //     }
-            // }
+            //mapped address of the user connecting he/she balance ###getting the balance
+            uint256 bal = stakedAmount[user];
+
+            // sending rewards only if the balance from the array shows that the user has staked so
+            // if less than or equal to zero they have not staked
+
+            for (uint256 j = 0; j < allowedTokens.length; j++) {
+                if (bal > 0) {
+                    // transfer(user, bal);
+                }
+            }
         }
     }
 
